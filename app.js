@@ -1,18 +1,50 @@
-const express = require('express')
+const express = require('express');
+const req = require('express/lib/request');
 const app = express()
+const bodyParser = require("body-parser");
+const res = require('express/lib/response');
 const port = 3000
+app.use(bodyParser.urlencoded(
+
+    {
+        extended: true
+    }));
+app.use(express.static(path.join(__dirname, "../public")));
+var itemarr = ["buy food", "cook food", "Eat lunch"];
+app.set("view engine", "ejs");
 
 app.get("/", function(req, res) {
     const today = new Date();
-    const currenrDay = today.getDay();
-    if (currenrDay == 6 || currenrDay == 0) {
-        res.send("enjoy its weekend");
-    } else {
-        res.send("fuck yourself till weekend");
+    var options = {
+        weekday: 'long',
+        // year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
 
-    }
 
-})
+    var day = today.toLocaleDateString("en-US", options);
+
+
+
+
+    res.render("list", {
+        KindOfDay: day,
+        newlistitems: itemarr
+
+    });
+
+});
+app.post("/", function(req, res) {
+    var item = req.body.items;
+    itemarr.push(item);
+    res.redirect("/");
+
+
+});
+
+
+
 
 
 app.listen(3000, function(req, res) {
